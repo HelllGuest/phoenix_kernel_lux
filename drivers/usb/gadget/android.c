@@ -2640,7 +2640,7 @@ static DEVICE_ATTR(luns, S_IRUGO | S_IWUSR,
 				mass_storage_lun_info_show,
 				mass_storage_lun_info_store);
 
-static ssize_t mass_storage_cdrom_store(struct device *dev,
+/*static ssize_t mass_storage_cdrom_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t size)
 {
 	struct android_usb_function *f = dev_get_drvdata(dev);
@@ -2657,7 +2657,7 @@ static ssize_t mass_storage_cdrom_store(struct device *dev,
 	return -EINVAL;
 }
 
-static DEVICE_ATTR(cdrom, S_IWUSR, NULL, mass_storage_cdrom_store);
+static DEVICE_ATTR(cdrom, S_IWUSR, NULL, mass_storage_cdrom_store);*/
 
 static struct device_attribute *mass_storage_function_attributes[] = {
 	&dev_attr_inquiry_string,
