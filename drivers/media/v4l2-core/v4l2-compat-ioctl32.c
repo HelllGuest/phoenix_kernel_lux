@@ -264,7 +264,7 @@ static int put_v4l2_create32(struct v4l2_create_buffers *kp, struct v4l2_create_
 
 struct v4l2_standard32 {
 	__u32		     index;
-	__u32		     id[2]; /* __u64 would get the alignment wrong */
+	compat_u64	     id;
 	__u8		     name[24];
 	struct v4l2_fract    frameperiod; /* Frames, not fields */
 	__u32		     framelines;
@@ -284,7 +284,7 @@ static int put_v4l2_standard32(struct v4l2_standard *kp, struct v4l2_standard32 
 {
 	if (!access_ok(VERIFY_WRITE, up, sizeof(struct v4l2_standard32)) ||
 		put_user(kp->index, &up->index) ||
-		copy_to_user(up->id, &kp->id, sizeof(__u64)) ||
+		put_user(kp->id, &up->id) ||
 		copy_to_user(up->name, kp->name, 24) ||
 		copy_to_user(&up->frameperiod, &kp->frameperiod, sizeof(kp->frameperiod)) ||
 		put_user(kp->framelines, &up->framelines) ||
@@ -336,10 +336,6 @@ static int get_v4l2_plane32(struct v4l2_plane *up, struct v4l2_plane32 *up32,
 
 	if (copy_in_user(up, up32, 2 * sizeof(__u32)) ||
 		copy_in_user(&up->data_offset, &up32->data_offset,
-				sizeof(__u32)) ||
-		copy_in_user(up->reserved, up32->reserved,
-				sizeof(up->reserved)) ||
-		copy_in_user(&up->length, &up32->length,
 				sizeof(__u32)))
 		return -EFAULT;
 
@@ -365,8 +361,6 @@ static int put_v4l2_plane32(struct v4l2_plane *up, struct v4l2_plane32 *up32,
 				enum v4l2_memory memory)
 {
 	if (copy_in_user(up32, up, 2 * sizeof(__u32)) ||
-		copy_in_user(up32->reserved, up->reserved,
-				sizeof(up32->reserved)) ||
 		copy_in_user(&up32->data_offset, &up->data_offset,
 				sizeof(__u32)))
 		return -EFAULT;
@@ -408,16 +402,6 @@ static int get_v4l2_buffer32(struct v4l2_buffer *kp, struct v4l2_buffer32 __user
 			get_user(kp->timestamp.tv_usec,
 					&up->timestamp.tv_usec))
 			return -EFAULT;
-
-	if (V4L2_TYPE_IS_PRIVATE(kp->type)) {
-		compat_long_t tmp;
-
-		if (get_user(kp->length, &up->length) ||
-				get_user(tmp, &up->m.userptr))
-			return -EFAULT;
-
-		kp->m.userptr = (unsigned long)compat_ptr(tmp);
-	}
 
 	if (V4L2_TYPE_IS_MULTIPLANAR(kp->type)) {
 		if (get_user(kp->length, &up->length))
@@ -509,12 +493,6 @@ static int put_v4l2_buffer32(struct v4l2_buffer *kp, struct v4l2_buffer32 __user
 		put_user(kp->reserved, &up->reserved))
 			return -EFAULT;
 
-	if (V4L2_TYPE_IS_PRIVATE(kp->type)) {
-		if (put_user(kp->length, &up->length) ||
-				put_user(kp->m.userptr, &up->m.userptr))
-			return -EFAULT;
-	}
-
 	if (V4L2_TYPE_IS_MULTIPLANAR(kp->type)) {
 		num_planes = kp->length;
 		if (num_planes == 0)
@@ -598,10 +576,10 @@ struct v4l2_input32 {
 	__u32	     type;		/*  Type of input */
 	__u32	     audioset;		/*  Associated audios (bitfield) */
 	__u32        tuner;             /*  Associated tuner */
-	v4l2_std_id  std;
+	compat_u64   std;
 	__u32	     status;
 	__u32	     reserved[4];
-} __attribute__ ((packed));
+};
 
 /* The 64-bit v4l2_input struct has extra padding at the end of the struct.
    Otherwise it is identical to the 32-bit version. */
@@ -741,9 +719,7 @@ static int put_v4l2_ext_controls32(struct v4l2_ext_controls *kp, struct v4l2_ext
 struct v4l2_event32 {
 	__u32				type;
 	union {
-		struct v4l2_event_vsync		vsync;
-		struct v4l2_event_ctrl		ctrl;
-		struct v4l2_event_frame_sync	frame_sync;
+		compat_s64		value64;
 		__u8			data[64];
 	} u;
 	__u32				pending;
