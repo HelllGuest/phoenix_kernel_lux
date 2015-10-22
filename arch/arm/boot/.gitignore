@@ -1,0 +1,11 @@
+Image
+zImage
+xipImage
+bootpImage
+uImage
+*.dtb
+zImage-dtb
+dt.img
+boot.img
+phoenix_kernel.zip
+initramfs.cpio*
