@@ -41,7 +41,7 @@ export KBUILD_BUILD_USER="anoopkumar"
 export KBUILD_BUILD_HOST="helllfire"
 export ARCH=arm
 export SUBARCH=arm
-export CROSS_COMPILE=/home/anoopkumar/android/toolchains/arm-linux-eabi-UB-4.9/bin/arm-eabi-
+export CROSS_COMPILE=/home/anoopkumar/android/toolchains/arm-cortex_a53_linaro-linux-gnueabi/bin/arm-cortex_a53_linaro-linux-gnueabi-
 
 compile_kernel ()
 {
