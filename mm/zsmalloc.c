@@ -45,9 +45,7 @@
  *
  */
 
-#ifdef CONFIG_ZSMALLOC_DEBUG
-#define DEBUG
-#endif
+
 
 #include <linux/module.h>
 #include <linux/kernel.h>
