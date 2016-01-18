@@ -6,6 +6,5 @@ uImage
 *.dtb
 zImage-dtb
 dt.img
-boot.img
-squid_kernel.zip
-initramfs.cpio*
+phoenix_kernel.zip
+
