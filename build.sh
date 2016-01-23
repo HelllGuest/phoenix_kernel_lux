@@ -27,7 +27,7 @@ yellow='\033[0;33m'
 red='\033[0;31m'
 nocol='\033[0m'
 # Modify the following variable if you want to build
-export CROSS_COMPILE="/home/anoopkumar/android/toolchains/armeb-cortex_a53-linux-gnueabi/bin/armeb-cortex_a53-linux-gnueabi-"
+export CROSS_COMPILE="/home/anoopkumar/android/toolchains/arm-cortex_a53-linux-gnueabi-5.2.0/bin/arm-cortex_a53-linux-gnueabi-"
 export ARCH=arm
 export SUBARCH=arm
 export KBUILD_BUILD_USER="anoopkumar"
