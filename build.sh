@@ -41,6 +41,7 @@ echo "          Compiling Phoenix kernel          "
 echo -e "***********************************************$nocol"
 rm -f $KERN_IMG
 make phoenix_defconfig
+make menuconfig
 make zImage -j4
 if ! [ -a $KERN_IMG ];
 then
