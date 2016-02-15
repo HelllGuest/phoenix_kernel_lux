@@ -339,6 +339,20 @@ void cpufreq_notify_transition(struct cpufreq_policy *policy,
 }
 EXPORT_SYMBOL_GPL(cpufreq_notify_transition);
 
+/**
+ * cpufreq_notify_utilization - notify CPU userspace about CPU utilization
+ * change
+ *
+ * This function is called everytime the CPU load is evaluated by the
+ * ondemand governor. It notifies userspace of cpu load changes via sysfs.
+ */
+void cpufreq_notify_utilization(struct cpufreq_policy *policy,
+               unsigned int util)
+{
+       if (policy)
+               policy->util = util;
+}
+
 
 /*********************************************************************
  *                          SYSFS INTERFACE                          *
@@ -671,6 +685,39 @@ static struct attribute *default_attrs[] = {
 static struct kset *cpufreq_kset;
 struct kobject *cpufreq_global_kobject;
 EXPORT_SYMBOL(cpufreq_global_kobject);
+
+static int cpufreq_global_kobject_usage;
+
+int cpufreq_get_global_kobject(void)
+{
+	if (!cpufreq_global_kobject_usage++)
+		return kobject_add(cpufreq_global_kobject,
+				&cpu_subsys.dev_root->kobj, "%s", "cpufreq");
+
+	return 0;
+}
+EXPORT_SYMBOL(cpufreq_get_global_kobject);
+
+void cpufreq_put_global_kobject(void)
+{
+	if (!--cpufreq_global_kobject_usage)
+		kobject_del(cpufreq_global_kobject);
+}
+EXPORT_SYMBOL(cpufreq_put_global_kobject);
+
+int cpufreq_sysfs_create_file(const struct attribute *attr)
+{
+	int ret = cpufreq_get_global_kobject();
+
+	if (!ret) {
+		ret = sysfs_create_file(cpufreq_global_kobject, attr);
+		if (ret)
+			cpufreq_put_global_kobject();
+	}
+
+	return ret;
+}
+EXPORT_SYMBOL(cpufreq_sysfs_create_file);
 
 static bool cpu_frozen;
 static int cpufreq_uevent_filter(struct kset *kset, struct kobject *kobj)
@@ -1404,6 +1451,27 @@ static void cpufreq_out_of_sync(unsigned int cpu, unsigned int old_freq,
 	cpufreq_notify_transition(policy, &freqs, CPUFREQ_PRECHANGE);
 	cpufreq_notify_transition(policy, &freqs, CPUFREQ_POSTCHANGE);
 }
+
+/**
+ * cpufreq_quick_get_util - get the CPU utilization from policy->util
+ * @cpu: CPU number
+ *
+ * This is the last known util, without actually getting it from the driver.
+ * Return value will be same as what is shown in util in sysfs.
+ */
+unsigned int cpufreq_quick_get_util(unsigned int cpu)
+{
+       struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
+       unsigned int ret_util = 0;
+
+       if (policy) {
+               ret_util = policy->util;
+               cpufreq_cpu_put(policy);
+ }
+
+       return ret_util;
+}
+EXPORT_SYMBOL(cpufreq_quick_get_util);
 
 /**
  * cpufreq_quick_get - get the CPU frequency (in kHz) from policy->cur
