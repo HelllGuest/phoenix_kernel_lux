@@ -2515,7 +2515,7 @@ static int cpufreq_notifier_trans(struct notifier_block *nb,
  		update_task_ravg(rq->curr, rq, TASK_UPDATE, sched_clock(), 0);
  		rq->cur_freq = new_freq;
  		raw_spin_unlock_irqrestore(&rq->lock, flags);
-
+}
 	return 0;
 }
 
