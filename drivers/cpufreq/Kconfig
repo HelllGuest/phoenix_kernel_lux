@@ -173,6 +173,13 @@ config CPU_FREQ_DEFAULT_GOV_BIOSHOCK
 	help
 	  Default governor of BioShock kernel
 
+config CPU_FREQ_DEFAULT_GOV_ZZMOOVE
+ 	bool "zzmoove"
+ 	select CPU_FREQ_GOV_ZZMOOVE
+ 	select CPU_FREQ_GOV_PERFORMANCE
+ 	help
+ 	  Use the CPUFreq governor 'zzmoove' as default.
+
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -346,6 +353,12 @@ config CPU_FREQ_GOV_BIOSHOCK
 	depends on CPU_FREQ
 	help
 	  'bioshock' - More aggressive version of conservative
+
+config CPU_FREQ_GOV_ZZMOOVE
+ 	tristate "'zzmoove' cpufreq governor"
+ 	depends on CPU_FREQ
+ 	help
+ 	  ZZMoove governor is based on the modified conservative 
 
 config CPU_BOOST
 	tristate "Event base short term CPU freq boost"
