@@ -19,17 +19,17 @@
 
 #include "power.h"
 
-static bool enable_wlan_rx_wake_ws = true;
+static bool enable_wlan_rx_wake_ws = false;
 module_param(enable_wlan_rx_wake_ws, bool, 0644);
-static bool enable_wlan_ctrl_wake_ws = true;
+static bool enable_wlan_ctrl_wake_ws = false;
 module_param(enable_wlan_ctrl_wake_ws, bool, 0644);
-static bool enable_wlan_wake_ws = true;
+static bool enable_wlan_wake_ws = false;
 module_param(enable_wlan_wake_ws, bool, 0644);
 static bool enable_bluedroid_timer_ws = true;
 module_param(enable_bluedroid_timer_ws, bool, 0644);
 static bool enable_bluesleep_ws = true;
 module_param(enable_bluesleep_ws, bool, 0644);
-static bool enable_ipa_ws = true;
+static bool enable_ipa_ws = false;
 module_param(enable_ipa_ws, bool, 0644);
 
 /*
